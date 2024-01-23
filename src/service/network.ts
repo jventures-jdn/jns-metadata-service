@@ -1,28 +1,30 @@
-import { ethers } from 'ethers';
-import { UnsupportedNetwork } from '../base';
+import { ethers } from "ethers";
+import { UnsupportedNetwork } from "../base";
 import {
   NODE_PROVIDER,
   NODE_PROVIDER_URL,
   NODE_PROVIDER_URL_CF,
   NODE_PROVIDER_URL_GOERLI,
-} from '../config';
+} from "../config";
 
 const NODE_PROVIDERS = {
-  INFURA    : 'INFURA',
-  CLOUDFLARE: 'CLOUDFLARE',
-  GOOGLE    : 'GOOGLE',
-  GETH      : 'GETH'
+  INFURA: "INFURA",
+  CLOUDFLARE: "CLOUDFLARE",
+  GOOGLE: "GOOGLE",
+  GETH: "GETH",
 };
 
 export const NETWORK = {
-  LOCAL  : 'local',
-  RINKEBY: 'rinkeby',
-  ROPSTEN: 'ropsten',
-  GOERLI : 'goerli',
-  MAINNET: 'mainnet',
+  LOCAL: "local",
+  RINKEBY: "rinkeby",
+  ROPSTEN: "ropsten",
+  GOERLI: "goerli",
+  MAINNET: "mainnet",
+  JFIN: "jfin",
+  JFIN_TESTNET: "jfintestnet",
 } as const;
 
-export type NetworkName = typeof NETWORK[keyof typeof NETWORK];
+export type NetworkName = (typeof NETWORK)[keyof typeof NETWORK];
 
 function getWeb3URL(
   providerName: string,
@@ -31,7 +33,7 @@ function getWeb3URL(
 ): string {
   switch (providerName.toUpperCase()) {
     case NODE_PROVIDERS.INFURA:
-      return `${api.replace('https://', `https://${network}.`)}`;
+      return `${api.replace("https://", `https://${network}.`)}`;
     case NODE_PROVIDERS.CLOUDFLARE:
       return `${api}/${network}`;
     case NODE_PROVIDERS.GOOGLE:
@@ -41,7 +43,7 @@ function getWeb3URL(
     case NODE_PROVIDERS.GETH:
       return api;
     default:
-      throw Error('');
+      throw Error("");
   }
 }
 
@@ -55,31 +57,34 @@ export default function getNetwork(network: NetworkName): {
   let SUBGRAPH_URL: string;
   switch (network) {
     case NETWORK.LOCAL:
-      SUBGRAPH_URL = 'http://127.0.0.1:8000/subgraphs/name/graphprotocol/ens';
+      SUBGRAPH_URL = "http://127.0.0.1:8000/subgraphs/name/graphprotocol/ens";
       break;
     case NETWORK.RINKEBY:
       SUBGRAPH_URL =
-        'https://api.thegraph.com/subgraphs/name/makoto/ensrinkeby';
+        "https://api.thegraph.com/subgraphs/name/makoto/ensrinkeby";
       break;
     case NETWORK.ROPSTEN:
       SUBGRAPH_URL =
-        'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten';
+        "https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten";
       break;
     case NETWORK.GOERLI:
       SUBGRAPH_URL =
-        'https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli';
+        "https://api.thegraph.com/subgraphs/name/ensdomains/ensgoerli";
       break;
     case NETWORK.MAINNET:
-      SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens';
+      SUBGRAPH_URL = "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
+      break;
+    case NETWORK.JFIN_TESTNET:
+      SUBGRAPH_URL = "http://graph-node:8000/subgraphs/name/graphprotocol/ens";
       break;
     default:
       throw new UnsupportedNetwork(`Unknown network '${network}'`, 501);
   }
 
-  const WEB3_URL = getWeb3URL(NODE_PROVIDER, NODE_PROVIDER_URL, network);
+  const WEB3_URL = "https://rpc.testnet.jfinchain.com";
 
   // add source param at the end for better request measurability
-  SUBGRAPH_URL = SUBGRAPH_URL + '?source=ens-metadata';
+  SUBGRAPH_URL = SUBGRAPH_URL + "?source=ens-metadata";
 
   const provider = new ethers.providers.StaticJsonRpcProvider(WEB3_URL);
   return { WEB3_URL, SUBGRAPH_URL, provider };
