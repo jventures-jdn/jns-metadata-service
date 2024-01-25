@@ -1,28 +1,25 @@
-import { request }        from 'graphql-request';
-import { ethers }         from 'ethers';
+import { request } from "graphql-request";
+import { ethers } from "ethers";
 import {
   GET_REGISTRATIONS,
   GET_DOMAINS,
   GET_DOMAINS_BY_LABELHASH,
   GET_WRAPPED_DOMAIN,
-}                         from './subgraph';
-import { Metadata }       from './metadata';
-import { getAvatarImage } from './avatar';
+} from "./subgraph";
+import { Metadata } from "./metadata";
+import { getAvatarImage } from "./avatar";
 import {
   ExpiredNameError,
   NamehashMismatchError,
   SubgraphRecordNotFound,
   Version,
-}                         from '../base';
-import { NetworkName }    from './network';
-import { 
-  decodeFuses, 
-  getWrapperState 
-}                         from '../utils/fuse';
-import { getNamehash }    from '../utils/namehash';
+} from "../base";
+import { NetworkName } from "./network";
+import { decodeFuses, getWrapperState } from "../utils/fuse";
+import { getNamehash } from "../utils/namehash";
 
 const eth =
-  '0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae';
+  "0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
 const GRACE_PERIOD_MS = 7776000000; // 90 days as milliseconds
 
 export async function getDomain(
@@ -78,8 +75,8 @@ export async function getDomain(
   async function requestAvatar() {
     try {
       const [buffer, mimeType] = await getAvatarImage(provider, name);
-      if (mimeType === 'text/html') return;
-      const base64 = buffer.toString('base64');
+      if (mimeType === "text/html") return;
+      const base64 = buffer.toString("base64");
       return [base64, mimeType];
     } catch {
       /* do nothing */
@@ -98,10 +95,10 @@ export async function getDomain(
       metadata.generateImage();
     } else {
       metadata.setBackground(
-        `https://metadata.ens.domains/${networkName}/avatar/${name}`
+        `https://jns-metadata-service-metadata-tdgmlujt7q-uc.a.run.app/${networkName}/avatar/${name}`
       );
       metadata.setImage(
-        `https://metadata.ens.domains/${networkName}/${contractAddress}/${hexId}/image`
+        `https://jns-metadata-service-metadata-tdgmlujt7q-uc.a.run.app/${networkName}/${contractAddress}/${hexId}/image`
       );
     }
   }
@@ -124,13 +121,13 @@ export async function getDomain(
       }
       if (registration) {
         metadata.addAttribute({
-          trait_type: 'Registration Date',
-          display_type: 'date',
+          trait_type: "Registration Date",
+          display_type: "date",
           value: registered_date,
         });
         metadata.addAttribute({
-          trait_type: 'Expiration Date',
-          display_type: 'date',
+          trait_type: "Expiration Date",
+          display_type: "date",
           value: expiration_date,
         });
       }
@@ -144,25 +141,25 @@ export async function getDomain(
       });
       const decodedFuses = decodeFuses(fuses);
       metadata.addAttribute({
-        trait_type: 'Namewrapper Fuse States',
-        display_type: 'object',
+        trait_type: "Namewrapper Fuse States",
+        display_type: "object",
         value: decodedFuses,
       });
 
       metadata.addAttribute({
-        trait_type: 'Namewrapper Expiry Date',
-        display_type: 'date',
+        trait_type: "Namewrapper Expiry Date",
+        display_type: "date",
         value: expiryDate * 1000,
       });
 
       metadata.addAttribute({
-        trait_type: 'Namewrapper State',
-        display_type: 'string',
+        trait_type: "Namewrapper State",
+        display_type: "string",
         value: getWrapperState(decodedFuses),
       });
     }
   }
-  const isAvatarExist = resolver?.texts && resolver.texts.includes('avatar');
+  const isAvatarExist = resolver?.texts && resolver.texts.includes("avatar");
   await Promise.all([requestMedia(isAvatarExist), requestAttributes()]);
   return metadata;
 }
