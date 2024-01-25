@@ -75,7 +75,8 @@ export default function getNetwork(network: NetworkName): {
       SUBGRAPH_URL = "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
       break;
     case NETWORK.JFIN_TESTNET:
-      SUBGRAPH_URL = "http://graph-node:8000/subgraphs/name/graphprotocol/ens";
+      SUBGRAPH_URL =
+        "https://termite-intense-monarch.ngrok-free.app/subgraphs/name/graphprotocol/ens";
       break;
     default:
       throw new UnsupportedNetwork(`Unknown network '${network}'`, 501);

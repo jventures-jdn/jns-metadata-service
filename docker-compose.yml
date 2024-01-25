@@ -11,4 +11,4 @@ services:
       - ADDRESS_ETH_REGISTRAR=0x4Dd6dc791F79bc85766649FC3e42059c564703BD
       - ADDRESS_NAME_WRAPPER=0xc57de38dBcB35473773f84A553F2Ab5fC23B4653
       - RPC_PROVIDER=https://rpc.testnet.jfinchain.com
-      - SUBGRAPH_URL=http://graph-node:8000/subgraphs/name/graphprotocol/ens
+      - SUBGRAPH_URL=https://termite-intense-monarch.ngrok-free.app/subgraphs/name/graphprotocol/ens
