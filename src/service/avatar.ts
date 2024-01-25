@@ -57,10 +57,10 @@ export class AvatarMetadata {
   async getImage() {
     let avatarURI;
     try {
-      // avatarURI = await this.avtResolver.getAvatar(this.uri, {
-      //   jsdomWindow: window,
-      // });
-      avatarURI = `https://jns-avatar-upload.jfin.workers.dev/jfintestnet/${this.uri}`;
+      avatarURI = await this.avtResolver.getAvatar(this.uri, {
+        jsdomWindow: window,
+      });
+      // avatarURI = `https://jns-avatar-upload.jfin.workers.dev/jfintestnet/${this.uri}`;
     } catch (error: any) {
       if (error instanceof Error) {
         console.log(`${this.uri} - error:`, error.message);

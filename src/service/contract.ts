@@ -63,8 +63,8 @@ async function checkV2Contract(
   }
 
   const namehash = getNamehash(identifier);
-  const isWrapped = await contract.isWrapped(namehash);
-  assert(isWrapped);
+  // const isWrapped = await contract.isWrapped(namehash);
+  // assert(isWrapped);
 
   return { tokenId: namehash, version: Version.v2 };
 }
