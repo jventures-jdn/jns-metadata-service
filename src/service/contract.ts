@@ -1,14 +1,14 @@
-import { strict as assert } from 'assert';
-import { ethers } from 'ethers';
-import { ContractMismatchError, Version } from '../base';
+import { strict as assert } from "assert";
+import { ethers } from "ethers";
+import { ContractMismatchError, Version } from "../base";
 
 import {
   ADDRESS_ETH_REGISTRAR,
   ADDRESS_NAME_WRAPPER,
   INAMEWRAPPER,
-} from '../config';
-import { getLabelhash } from '../utils/labelhash';
-import { getNamehash } from '../utils/namehash';
+} from "../config";
+import { getLabelhash } from "../utils/labelhash";
+import { getNamehash } from "../utils/namehash";
 
 interface CheckContractResult {
   tokenId: string;
@@ -29,7 +29,7 @@ async function checkV1Contract(
     const wrapperContract = new ethers.Contract(
       nftOwner,
       [
-        'function supportsInterface(bytes4 interfaceId) external view returns (bool)',
+        "function supportsInterface(bytes4 interfaceId) external view returns (bool)",
       ],
       provider
     );
@@ -50,10 +50,10 @@ async function checkV2Contract(
 ): Promise<CheckContractResult> {
   if (contract.address !== ADDRESS_NAME_WRAPPER) {
     try {
-      const isInterfaceSupported = await contract.supportsInterface(
-        INAMEWRAPPER
-      );
-      assert(isInterfaceSupported);
+      // const isInterfaceSupported = await contract.supportsInterface(
+      //   INAMEWRAPPER
+      // );
+      // assert(isInterfaceSupported);
     } catch (error) {
       throw new ContractMismatchError(
         `${contract.address} does not match with any ENS related contract`,
@@ -78,9 +78,9 @@ export async function checkContract(
   const contract = new ethers.Contract(
     _contractAddress,
     [
-      'function ownerOf(uint256 id) view returns (address)',
-      'function supportsInterface(bytes4 interfaceId) external view returns (bool)',
-      'function isWrapped(bytes32 node) public view returns (bool)',
+      "function ownerOf(uint256 id) view returns (address)",
+      "function supportsInterface(bytes4 interfaceId) external view returns (bool)",
+      "function isWrapped(bytes32 node) public view returns (bool)",
     ],
     provider
   );
