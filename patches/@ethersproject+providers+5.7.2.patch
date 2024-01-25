@@ -1,0 +1,38 @@
+diff --git a/node_modules/@ethersproject/providers/lib/base-provider.js b/node_modules/@ethersproject/providers/lib/base-provider.js
+index 95762d7..379153f 100644
+--- a/node_modules/@ethersproject/providers/lib/base-provider.js
++++ b/node_modules/@ethersproject/providers/lib/base-provider.js
+@@ -2269,12 +2269,13 @@ var BaseProvider = /** @class */ (function (_super) {
+                         }
+                         // Optimization since the eth node cannot change and does
+                         // not have a wildcard resolver
+-                        if (name !== "eth" && currentName === "eth") {
++                        if (name !== "jfin" && currentName === "jfin") {
+                             return [2 /*return*/, null];
+                         }
+                         return [4 /*yield*/, this._getResolver(currentName, "getResolver")];
+                     case 2:
+                         addr = _b.sent();
++                        console.log('resolver', addr)
+                         if (!(addr != null)) return [3 /*break*/, 5];
+                         resolver = new Resolver(this, addr, name);
+                         _a = currentName !== name;
+@@ -2310,8 +2311,10 @@ var BaseProvider = /** @class */ (function (_super) {
+                         return [4 /*yield*/, this.getNetwork()];
+                     case 1:
+                         network = _a.sent();
++                        network = { chainId: 3502, name: 'jfintestnet', ensAddress: '0x1FE51DdbA60F3Ec64DA002E5ccBc46e597049E24' }
+                         // No ENS...
+                         if (!network.ensAddress) {
++                            console.log('network does not support ENS')
+                             logger.throwError("network does not support ENS", logger_1.Logger.errors.UNSUPPORTED_OPERATION, { operation: operation, network: network.name });
+                         }
+                         _a.label = 2;
+@@ -2356,6 +2359,7 @@ var BaseProvider = /** @class */ (function (_super) {
+                         return [4 /*yield*/, this.getResolver(name)];
+                     case 2:
+                         resolver = _a.sent();
++                        console.log('resolver', resolver)
+                         if (!resolver) {
+                             return [2 /*return*/, null];
+                         }

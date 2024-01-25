@@ -30,6 +30,8 @@
     "jsdom": "^19.0.0",
     "lodash": "^4.17.21",
     "multiformats": "^9.4.8",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "rate-limiter-flexible": "^2.4.1",
     "redoc-express": "^1.0.0",
     "ssrf-req-filter": "^1.0.6",
@@ -45,7 +47,8 @@
     "test": "ENV=local ava -v --serial --timeout=1m",
     "test:cov": "nyc --reporter=json --reporter=text ava --serial",
     "docgen": "node docgen.js",
-    "appconfgen": "node appconfgen.js"
+    "appconfgen": "node appconfgen.js",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
