@@ -1,5 +1,5 @@
 diff --git a/node_modules/@ethersproject/providers/lib/base-provider.js b/node_modules/@ethersproject/providers/lib/base-provider.js
-index 95762d7..51dd35a 100644
+index 95762d7..3551f07 100644
 --- a/node_modules/@ethersproject/providers/lib/base-provider.js
 +++ b/node_modules/@ethersproject/providers/lib/base-provider.js
 @@ -2269,7 +2269,7 @@ var BaseProvider = /** @class */ (function (_super) {
@@ -15,7 +15,7 @@ index 95762d7..51dd35a 100644
                          return [4 /*yield*/, this.getNetwork()];
                      case 1:
                          network = _a.sent();
-+                        network = { chainId: 3502, name: 'jfintestnet', ensAddress: '0x1FE51DdbA60F3Ec64DA002E5ccBc46e597049E24' }
++                        network = { chainId: 3502, name: 'jfintestnet', ensAddress: '0x97f49F388Fb533746EA6f8494963037e864CFEAD' }
                          // No ENS...
                          if (!network.ensAddress) {
                              logger.throwError("network does not support ENS", logger_1.Logger.errors.UNSUPPORTED_OPERATION, { operation: operation, network: network.name });
