@@ -7,6 +7,7 @@ import { avatarMetadata } from './controller/avatarMetadata';
 import { avatarImage } from './controller/avatarImage';
 import { queryNFTep } from './controller/queryNFT';
 import { preview } from './controller/preview';
+import { ensMetadataTokenId } from './controller/ensMetadataTokenId';
 
 export default function (app: Express) {
   // #swagger.ignore = true
@@ -36,4 +37,5 @@ export default function (app: Express) {
   app.get('/queryNFT', queryNFTep);
 
   app.get('/preview/:name', preview);
+  app.get('/name/:tokenId', ensMetadataTokenId)
 }

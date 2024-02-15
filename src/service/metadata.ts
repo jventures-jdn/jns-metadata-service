@@ -65,6 +65,7 @@ export class Metadata {
     this.name = this.formatName(name, tokenId);
     this.description = this.formatDescription(name, description);
     this.attributes = this.initializeAttributes(created_date, label);
+    // TODO: USE JNS APP INSTEAD
     this.url = this.is_normalized
       ? `https://app.ens.domains/name/${name}`
       : null;
