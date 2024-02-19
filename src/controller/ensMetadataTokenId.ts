@@ -96,13 +96,13 @@ export async function ensMetadataTokenId(req: Request, res: Response) {
       }
       const _namehash = constructEthNameHash(tokenId, version as Version);
       const isRecordExist = await registry.recordExists(_namehash);
-      assert(isRecordExist, 'ENS name does not exist');
+      assert(isRecordExist, 'JNS name does not exist');
 
       // When entry is not available on subgraph yet,
       // return unknown name metadata with 200 status code
       const { url, ...unknownMetadata } = new Metadata({
         name: 'unknown.name',
-        description: 'Unknown ENS name',
+        description: 'Unknown JNS name',
         created_date: 1580346653000,
         tokenId: '',
         version: Version.v1,

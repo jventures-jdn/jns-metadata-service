@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "version": "0.0.1-alpha.1",
-    "title": "ENS Metadata Service",
-    "description": "Set of endpoints to query ENS metadata and more",
+    "title": "JNS Metadata Service",
+    "description": "Set of endpoints to query JNS metadata and more",
     "contact": "contact@ens.domains",
     "license": "MIT License",
     "x-logo": {
@@ -15,7 +15,7 @@
   "paths": {
     "/{networkName}/{contractAddress(0x[a-fA-F0-9]{40})}/{tokenId}": {
       "get": {
-        "description": "ENS NFT metadata",
+        "description": "JNS NFT metadata",
         "parameters": [
           {
             "name": "networkName",
@@ -41,7 +41,7 @@
               "$ref": "#/components/schemas/tokenId"
             },
             "type": "string",
-            "description": "Labelhash(v1) /Namehash(v2) of your ENS name.\n\nMore: https://docs.ens.domains/contract-api-reference/name-processing#hashing-names"
+            "description": "Labelhash(v1) /Namehash(v2) of your JNS name.\n\nMore: https://docs.ens.domains/contract-api-reference/name-processing#hashing-names"
           }
         ],
         "responses": {
@@ -77,7 +77,7 @@
     },
     "/{networkName}/{contractAddress(0x[a-fA-F0-9]{40})}/{tokenId}/image": {
       "get": {
-        "description": "ENS NFT image",
+        "description": "JNS NFT image",
         "parameters": [
           {
             "name": "networkName",
@@ -103,7 +103,7 @@
               "$ref": "#/components/schemas/tokenId"
             },
             "type": "string",
-            "description": "Labelhash(v1) /Namehash(v2) of your ENS name.\n\nMore: https://docs.ens.domains/contract-api-reference/name-processing#hashing-names"
+            "description": "Labelhash(v1) /Namehash(v2) of your JNS name.\n\nMore: https://docs.ens.domains/contract-api-reference/name-processing#hashing-names"
           }
         ],
         "responses": {
@@ -124,7 +124,7 @@
     },
     "/{networkName}/{contractAddress(0x[a-fA-F0-9]{40})}/{tokenId}/rasterize": {
       "get": {
-        "description": "ENS NFT image rasterization",
+        "description": "JNS NFT image rasterization",
         "parameters": [
           {
             "name": "networkName",
@@ -150,7 +150,7 @@
               "$ref": "#/components/schemas/tokenId"
             },
             "type": "string",
-            "description": "Labelhash(v1) /Namehash(v2) of your ENS name.\n\nMore: https://docs.ens.domains/contract-api-reference/name-processing#hashing-names"
+            "description": "Labelhash(v1) /Namehash(v2) of your JNS name.\n\nMore: https://docs.ens.domains/contract-api-reference/name-processing#hashing-names"
           }
         ],
         "responses": {
@@ -168,7 +168,7 @@
     },
     "/{networkName}/avatar/{name}/meta": {
       "get": {
-        "description": "ENS avatar metadata",
+        "description": "JNS avatar metadata",
         "parameters": [
           {
             "name": "networkName",
@@ -185,7 +185,7 @@
             "schema": {
               "$ref": "#/components/schemas/ensName"
             },
-            "description": "ENS name"
+            "description": "JNS name"
           }
         ],
         "responses": {
@@ -218,7 +218,7 @@
     },
     "/{networkName}/avatar/{name}": {
       "get": {
-        "description": "ENS avatar image",
+        "description": "JNS avatar image",
         "parameters": [
           {
             "name": "networkName",
@@ -235,7 +235,7 @@
             "schema": {
               "$ref": "#/components/schemas/ensName"
             },
-            "description": "ENS name"
+            "description": "JNS name"
           }
         ],
         "responses": {
@@ -279,7 +279,7 @@
     },
     "/preview/{name}": {
       "get": {
-        "description": "ENS NFT preview",
+        "description": "JNS NFT preview",
         "parameters": [
           {
             "name": "name",
@@ -288,7 +288,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "ENS name."
+            "description": "JNS name."
           }
         ],
         "responses": {
@@ -340,7 +340,7 @@
       "ENSMetadata": {
         "value": {
           "$name": "nick.eth",
-          "$description": "nick.eth, an ENS name.",
+          "$description": "nick.eth, an JNS name.",
           "$attributes": [
             {
               "trait_type": "Created Date",
@@ -377,7 +377,7 @@
         "properties": {
           "uri": {
             "type": "string",
-            "example": "ENS name of avatar holder"
+            "example": "JNS name of avatar holder"
           },
           "is_owner": {
             "type": "string",
@@ -457,11 +457,11 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "ENS name"
+            "example": "JNS name"
           },
           "description": {
             "type": "string",
-            "example": "Short ENS name description"
+            "example": "Short JNS name description"
           },
           "attributes": {
             "type": "string",
@@ -469,15 +469,15 @@
           },
           "name_length": {
             "type": "string",
-            "example": "Character length of ens name"
+            "example": "Character length of Jns name"
           },
           "url": {
             "type": "string",
-            "example": "ENS App URL of the name"
+            "example": "JNS App URL of the name"
           },
           "version": {
             "type": "string",
-            "example": "ENS NFT version"
+            "example": "JNS NFT version"
           },
           "background_image": {
             "type": "string",
@@ -485,7 +485,7 @@
           },
           "image_url": {
             "type": "string",
-            "example": "URL of ENS NFT image"
+            "example": "URL of JNS NFT image"
           }
         },
         "required": [

@@ -56,7 +56,7 @@ async function checkV2Contract(
       // assert(isInterfaceSupported);
     } catch (error) {
       throw new ContractMismatchError(
-        `${contract.address} does not match with any ENS related contract`,
+        `${contract.address} does not match with any JNS related contract`,
         400
       );
     }

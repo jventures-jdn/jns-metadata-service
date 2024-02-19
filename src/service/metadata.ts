@@ -67,7 +67,7 @@ export class Metadata {
     this.attributes = this.initializeAttributes(created_date, label);
     // TODO: USE JNS APP INSTEAD
     this.url = this.is_normalized
-      ? `https://app.ens.domains/name/${name}`
+      ? `https://fc2991c4.jns-app.pages.dev/name/${name}`
       : null;
     this.last_request_date = last_request_date;
     this.version = version;
@@ -87,7 +87,7 @@ export class Metadata {
   }
 
   formatDescription(name: string, description?: string) {
-    const baseDescription = description || `${this.name}, an ENS name.`;
+    const baseDescription = description || `${this.name}, an JNS name.`;
     const normalizedNote = !this.is_normalized
       ? ` (${name} is not in normalized form)`
       : '';

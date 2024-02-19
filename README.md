@@ -13,8 +13,8 @@
 ### Request
 - __network:__ Name of the chain to query for. (mainnet | goerli ...)
 - __contactAddress:__ accepts contractAddress of the NFT which represented by the tokenId
-- __NFT v1 - tokenId:__ accepts ENS name or labelhash of ENS name in both hex and int format
-- __NFT v2 - tokenId:__ accepts ENS name or namehash of ENS name in both hex and int format
+- __NFT v1 - tokenId:__ accepts JNS name or labelhash of JNS name in both hex and int format
+- __NFT v2 - tokenId:__ accepts JNS name or namehash of JNS name in both hex and int format
 
 ```
 /{network}/{contractAddress}/{tokenId}
@@ -30,7 +30,7 @@ https://metadata.ens.domains/mainnet/0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85/
 {
   "is_normalized": true,
   "name": "nick.eth",
-  "description": "nick.eth, an ENS name.",
+  "description": "nick.eth, an JNS name.",
   "attributes": [
     {
       "trait_type": "Created Date",

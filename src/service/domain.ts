@@ -95,10 +95,10 @@ export async function getDomain(
       metadata.generateImage();
     } else {
       metadata.setBackground(
-        `https://jns-metadata-service-i2utwvqgjq-as.a.run.app/${networkName}/avatar/${name}`
+        `https://jns-metadata.testnet.jfinchain.com/${networkName}/avatar/${name}`
       );
       metadata.setImage(
-        `https://jns-metadata-service-i2utwvqgjq-as.a.run.app/${networkName}/${contractAddress}/${hexId}/image`
+        `https://jns-metadata.testnet.jfinchain.com/${networkName}/${contractAddress}/${hexId}/image`
       );
     }
   }
