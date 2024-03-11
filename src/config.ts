@@ -42,6 +42,10 @@ const ETH_REGISTRY_ABI = [
 // response timeout: 1 min
 const RESPONSE_TIMEOUT = 15 * 1000;
 
+const S3_ENDPOINT = process.env.S3_ENDPOINT || "";
+const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || "";
+const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY || "";
+
 export {
   ADDRESS_ETH_REGISTRAR,
   ADDRESS_ETH_REGISTRY,
@@ -60,4 +64,7 @@ export {
   NODE_PROVIDER_URL_GOERLI,
   RESPONSE_TIMEOUT,
   SERVER_URL,
+  S3_ENDPOINT,
+  S3_ACCESS_KEY,
+  S3_SECRET_ACCESS_KEY,
 };
