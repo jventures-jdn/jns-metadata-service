@@ -13,6 +13,9 @@ import {
   ADDRESS_ETH_REGISTRY,
   ETH_REGISTRY_ABI,
   RESPONSE_TIMEOUT,
+  S3_ACCESS_KEY,
+  S3_ENDPOINT,
+  S3_SECRET_ACCESS_KEY,
 } from "../config";
 import { checkContract } from "../service/contract";
 import { getDomain } from "../service/domain";
@@ -41,6 +44,13 @@ export async function ensMetadata(req: Request, res: Response) {
   const { provider, SUBGRAPH_URL } = getNetwork(networkName as NetworkName);
   const last_request_date = Date.now();
   let tokenId, version;
+
+  if (identifier.includes("0x")) {
+    res.status(404).json({
+      message: "No results found.",
+    });
+  }
+
   try {
     ({ tokenId, version } = await checkContract(
       provider,
@@ -55,57 +65,59 @@ export async function ensMetadata(req: Request, res: Response) {
       contractAddress,
       tokenId,
       version,
-      false
+      false,
+      identifier
     );
 
     // add timestamp of the request date
     result.last_request_date = last_request_date;
 
-    if (getBlacklist().includes(tokenId)) {
-      const S3 = new S3Client({
-        region: "auto",
-        endpoint:
-          "https://f0e1db329ba4b7f30833ff222c1009f7.r2.cloudflarestorage.com",
-        credentials: {
-          accessKeyId: "",
-          secretAccessKey: "",
-        },
-      });
+    const S3 = new S3Client({
+      region: "auto",
+      endpoint: S3_ENDPOINT,
+      credentials: {
+        accessKeyId: S3_ACCESS_KEY,
+        secretAccessKey: S3_SECRET_ACCESS_KEY,
+      },
+    });
 
-      try {
-        await S3.send(
-          new GetObjectCommand({
-            Bucket: "jns",
-            Key: `jfintestnet/registered/${result.getOriginal()}`,
-          })
-        );
-      } catch (err) {
-        result.removeOriginalName();
-        res.json(result);
-        return;
-      }
+    try {
+      const isBlacklisted = getBlacklist().includes(identifier);
+      const bucketName = isBlacklisted ? "jns" : "jns-blacklist";
+      const sourceBucket = isBlacklisted ? "jns" : "jns-blacklist";
+      const destinationBucket = isBlacklisted ? "jns-blacklist" : "jns";
 
-      await S3.send(
-        new CopyObjectCommand({
-          Bucket: "jns-blacklist",
-          CopySource: `/jns/jfintestnet/registered/${result.getOriginal()}`,
-          Key: `jfintestnet/registered/${result.getOriginal()}`,
-        })
-      );
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: `jfintestnet/registered/${result.getRawName()}`,
+      };
 
-      await S3.send(
-        new DeleteObjectCommand({
-          Bucket: "jns",
-          Key: `jfintestnet/registered/${result.getOriginal()}`,
-        })
-      );
+      await S3.send(new GetObjectCommand(getObjectParams));
+
+      const copyObjectParams = {
+        Bucket: destinationBucket,
+        CopySource: `/${sourceBucket}/jfintestnet/registered/${result.getRawName()}`,
+        Key: `jfintestnet/registered/${result.getRawName()}`,
+      };
+
+      await S3.send(new CopyObjectCommand(copyObjectParams));
+
+      const deleteObjectParams = {
+        Bucket: bucketName,
+        Key: `jfintestnet/registered/${result.getRawName()}`,
+      };
+
+      await S3.send(new DeleteObjectCommand(deleteObjectParams));
+    } catch (err) {
+      result.removeRawName();
+      res.json(result);
     }
     /* #swagger.responses[200] = { 
       description: 'Metadata object',
       schema: { $ref: '#/definitions/ENSMetadata' }
     } */
-    result.removeOriginalName();
-    res.json(result);
+    result.removeRawName();
+    res.json(result);   
     return;
   } catch (error: any) {
     const errCode = (error?.code && Number(error.code)) || 500;
