@@ -42,9 +42,13 @@ const ETH_REGISTRY_ABI = [
 // response timeout: 1 min
 const RESPONSE_TIMEOUT = 15 * 1000;
 
+// s3
 const S3_ENDPOINT = process.env.S3_ENDPOINT || "";
 const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || "";
 const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY || "";
+
+// JNS app
+const APP_V3_ENDPOINT = process.env.APP_V3_ENDPOINT || "https://fc2991c4.jns-app.pages.dev";
 
 export {
   ADDRESS_ETH_REGISTRAR,
@@ -67,4 +71,5 @@ export {
   S3_ENDPOINT,
   S3_ACCESS_KEY,
   S3_SECRET_ACCESS_KEY,
+  APP_V3_ENDPOINT
 };

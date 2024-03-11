@@ -1,7 +1,7 @@
 import { ens_normalize } from "@adraffy/ens-normalize";
 import { CanvasRenderingContext2D, createCanvas, registerFont } from "canvas";
 import { Version } from "../base";
-import { CANVAS_FONT_PATH, CANVAS_EMOJI_FONT_PATH } from "../config";
+import { CANVAS_FONT_PATH, CANVAS_EMOJI_FONT_PATH, APP_V3_ENDPOINT } from "../config";
 import createSVGfromTemplate from "../svg-template";
 import base64EncodeUnicode from "../utils/base64encode";
 import { isASCII, findCharacterSet } from "../utils/characterSet";
@@ -68,7 +68,7 @@ export class Metadata {
     // TODO: USE JNS APP INSTEAD
     this.url =
       this.is_normalized && !getBlacklist().includes(identifier || "")
-        ? `https://fc2991c4.jns-app.pages.dev/name/${name}`
+        ? `${APP_V3_ENDPOINT}/name/${name}`
         : null;
     this.last_request_date = last_request_date;
     this.version = version;
