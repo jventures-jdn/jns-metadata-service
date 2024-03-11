@@ -23,6 +23,7 @@ export interface MetadataInit {
   tokenId: string;
   version: Version;
   last_request_date?: number;
+  identifier?: string;
 }
 
 export interface Metadata {
@@ -39,7 +40,7 @@ export interface Metadata {
   url?: string | null;
   version: Version;
   last_request_date?: number;
-  original?: string;
+  raw?: string;
 }
 
 export class Metadata {
@@ -53,30 +54,32 @@ export class Metadata {
     tokenId,
     version,
     last_request_date,
+    identifier,
   }: MetadataInit) {
     const label = this.getLabel(name);
 
     this.is_normalized = this._checkNormalized(name);
-    this.original = name;
-    this.name = getBlacklist().includes(tokenId)
+    this.raw = name;
+    this.name = getBlacklist().includes(identifier || "")
       ? this.maskName(name)
       : this.formatName(name, tokenId);
     this.description = this.formatDescription(name, description);
     this.attributes = this.initializeAttributes(created_date, label);
     // TODO: USE JNS APP INSTEAD
-    this.url = this.is_normalized
-      ? `https://fc2991c4.jns-app.pages.dev/name/${name}`
-      : null;
+    this.url =
+      this.is_normalized && !getBlacklist().includes(identifier || "")
+        ? `https://fc2991c4.jns-app.pages.dev/name/${name}`
+        : null;
     this.last_request_date = last_request_date;
     this.version = version;
   }
 
-  removeOriginalName() {
-    delete this.original;
+  removeRawName() {
+    delete this.raw;
   }
 
-  getOriginal() {
-    return this.original;
+  getRawName() {
+    return this.raw;
   }
 
   getLabel(name: string) {

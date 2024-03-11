@@ -30,7 +30,8 @@ export async function getDomain(
   contractAddress: string,
   tokenId: string,
   version: Version,
-  loadImages: boolean = true
+  loadImages: boolean = true,
+  identifier?: string
 ): Promise<Metadata> {
   let hexId: string, intId;
   if (!tokenId.match(/^0x/)) {
@@ -71,6 +72,7 @@ export async function getDomain(
     created_date: createdAt,
     tokenId: hexId,
     version,
+    identifier,
   });
 
   async function requestAvatar() {
@@ -96,7 +98,7 @@ export async function getDomain(
       metadata.generateImage();
     } else {
       metadata.setBackground(
-        getBlacklist()?.includes(tokenId)
+        getBlacklist()?.includes(identifier || "")
           ? ""
           : `https://jns-metadata.testnet.jfinchain.com/${networkName}/avatar/${name}`
       );
