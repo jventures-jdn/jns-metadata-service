@@ -85,8 +85,9 @@ export async function getDomain(
   }
 
   async function requestMedia(isAvatarExist: boolean) {
+    const isBlacklisted = getBlacklist().includes(tokenId)
     if (loadImages) {
-      if (isAvatarExist) {
+      if (isAvatarExist && !isBlacklisted) {
         const avatar = await requestAvatar();
         if (avatar) {
           const [base64, mimeType] = avatar;
@@ -96,7 +97,7 @@ export async function getDomain(
       metadata.generateImage();
     } else {
       metadata.setBackground(
-        getBlacklist().includes(tokenId)
+        isBlacklisted
           ? ""
           : `https://jns-metadata.testnet.jfinchain.com/${networkName}/avatar/${name}`
       );

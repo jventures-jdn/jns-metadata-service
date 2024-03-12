@@ -13,22 +13,13 @@ import {
   ADDRESS_ETH_REGISTRY,
   ETH_REGISTRY_ABI,
   RESPONSE_TIMEOUT,
-  S3_ACCESS_KEY,
-  S3_ENDPOINT,
-  S3_SECRET_ACCESS_KEY,
 } from "../config";
 import { checkContract } from "../service/contract";
 import { getDomain } from "../service/domain";
 import { Metadata } from "../service/metadata";
 import getNetwork, { NetworkName } from "../service/network";
 import { constructEthNameHash } from "../utils/namehash";
-import {
-  CopyObjectCommand,
-  DeleteObjectCommand,
-  GetObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3";
-import { getBlacklist } from "../utils/blacklist";
+import { handleBlacklistAvatar } from "../utils/s3";
 
 export async function ensMetadata(req: Request, res: Response) {
   // #swagger.description = 'ENS NFT metadata'
@@ -62,55 +53,18 @@ export async function ensMetadata(req: Request, res: Response) {
       false,
     );
 
+    await handleBlacklistAvatar(result.getRawName(), tokenId)
+
     // add timestamp of the request date
     result.last_request_date = last_request_date;
 
-    const S3 = new S3Client({
-      region: "auto",
-      endpoint: S3_ENDPOINT,
-      credentials: {
-        accessKeyId: S3_ACCESS_KEY,
-        secretAccessKey: S3_SECRET_ACCESS_KEY,
-      },
-    });
 
-    try {
-      const isBlacklisted = getBlacklist().includes(tokenId)
-      const bucketName = isBlacklisted ? "jns" : "jns-blacklist";
-      const sourceBucket = isBlacklisted ? "jns" : "jns-blacklist";
-      const destinationBucket = isBlacklisted ? "jns-blacklist" : "jns";
-
-      const getObjectParams = {
-        Bucket: bucketName,
-        Key: `jfintestnet/registered/${result.getRawName()}`,
-      };
-
-      await S3.send(new GetObjectCommand(getObjectParams));
-
-      const copyObjectParams = {
-        Bucket: destinationBucket,
-        CopySource: `/${sourceBucket}/jfintestnet/registered/${result.getRawName()}`,
-        Key: `jfintestnet/registered/${result.getRawName()}`,
-      };
-
-      await S3.send(new CopyObjectCommand(copyObjectParams));
-
-      const deleteObjectParams = {
-        Bucket: bucketName,
-        Key: `jfintestnet/registered/${result.getRawName()}`,
-      };
-
-      await S3.send(new DeleteObjectCommand(deleteObjectParams));
-    } catch (err) {
-      result.removeRawName();
-      res.json(result);
-    }
     /* #swagger.responses[200] = { 
       description: 'Metadata object',
       schema: { $ref: '#/definitions/ENSMetadata' }
     } */
     result.removeRawName();
-    res.json(result);   
+    res.json(result);
     return;
   } catch (error: any) {
     const errCode = (error?.code && Number(error.code)) || 500;
@@ -165,7 +119,7 @@ export async function ensMetadata(req: Request, res: Response) {
         message: unknownMetadata,
       });
       return;
-    } catch (error) {}
+    } catch (error) { }
 
     /* #swagger.responses[404] = {
       description: 'No results found'
