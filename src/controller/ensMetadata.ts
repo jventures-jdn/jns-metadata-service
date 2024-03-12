@@ -45,12 +45,6 @@ export async function ensMetadata(req: Request, res: Response) {
   const last_request_date = Date.now();
   let tokenId, version;
 
-  if (identifier.includes("0x")) {
-    res.status(404).json({
-      message: "No results found.",
-    });
-  }
-
   try {
     ({ tokenId, version } = await checkContract(
       provider,
@@ -66,7 +60,6 @@ export async function ensMetadata(req: Request, res: Response) {
       tokenId,
       version,
       false,
-      identifier
     );
 
     // add timestamp of the request date
@@ -82,7 +75,7 @@ export async function ensMetadata(req: Request, res: Response) {
     });
 
     try {
-      const isBlacklisted = getBlacklist().includes(identifier);
+      const isBlacklisted = getBlacklist().includes(tokenId)
       const bucketName = isBlacklisted ? "jns" : "jns-blacklist";
       const sourceBucket = isBlacklisted ? "jns" : "jns-blacklist";
       const destinationBucket = isBlacklisted ? "jns-blacklist" : "jns";

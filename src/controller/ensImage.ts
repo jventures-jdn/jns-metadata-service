@@ -23,12 +23,6 @@ export async function ensImage(req: Request, res: Response) {
 
   const { contractAddress, networkName, tokenId: identifier } = req.params;
 
-  if (identifier.includes("0x")) {
-    res.status(404).json({
-      message: "No results found.",
-    });
-  }
-
   try {
     const { provider, SUBGRAPH_URL } = getNetwork(networkName as NetworkName);
     const { tokenId, version } = await checkContract(
@@ -44,7 +38,6 @@ export async function ensImage(req: Request, res: Response) {
       tokenId,
       version,
       undefined,
-      identifier
     );
     if (result.image_url) {
       const base64 = result.image_url.replace('data:image/svg+xml;base64,', '');

@@ -32,12 +32,6 @@ export async function ensMetadataTokenId(req: Request, res: Response) {
 
   const { tokenId: identifier } = req.params;
 
-  if (identifier.includes("0x")) {
-    res.status(404).json({
-      message: "No results found.",
-    });
-  }
-
   const contractAddress = "0x8Cd716d9cf32d4C3605E3Ba60932BD71CfeEb689";
   const networkName = "jfintestnet"
   const { provider, SUBGRAPH_URL } = getNetwork(networkName as NetworkName);
@@ -57,7 +51,6 @@ export async function ensMetadataTokenId(req: Request, res: Response) {
       tokenId,
       version,
       false,
-      identifier
     );
 
     // add timestamp of the request date
