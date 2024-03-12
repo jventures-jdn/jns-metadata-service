@@ -38,7 +38,6 @@ export async function ensImage(req: Request, res: Response) {
       contractAddress,
       tokenId,
       version,
-      undefined,
     );
 
     await handleBlacklistAvatar(result.getRawName(), tokenId)
