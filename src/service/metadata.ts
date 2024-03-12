@@ -9,9 +9,9 @@ import { getCodePointLength, getSegmentLength } from "../utils/charLength";
 import { getBlacklist } from "../utils/blacklist";
 
 interface Attribute {
-  trait_type: string;
-  display_type: string;
-  value: any;
+  trait_type: string,
+  display_type: string,
+  value: any
 }
 
 export interface MetadataInit {
@@ -94,16 +94,16 @@ export class Metadata {
     return this.is_normalized
       ? name
       : tokenId.replace(
-          new RegExp("^(.{0,6}).*(.{4})$", "im"),
-          "[$1...$2].eth"
-        );
+        new RegExp('^(.{0,6}).*(.{4})$', 'im'),
+        '[$1...$2].eth'
+      );
   }
 
   formatDescription(name: string, description?: string) {
     const baseDescription = description || `${this.name}, an JNS name.`;
     const normalizedNote = !this.is_normalized
       ? ` (${name} is not in normalized form)`
-      : "";
+      : '';
     const asciiWarning = this.generateAsciiWarning(this.getLabel(name));
     return `${baseDescription}${normalizedNote}${asciiWarning}`;
   }
@@ -111,15 +111,15 @@ export class Metadata {
   generateAsciiWarning(label: string) {
     if (!isASCII(label)) {
       return (
-        " ⚠️ ATTENTION: This name contains non-ASCII characters as shown above. " +
-        "Please be aware that there are characters that look identical or very " +
-        "similar to English letters, especially characters from Cyrillic and Greek. " +
-        "Also, traditional Chinese characters can look identical or very similar to " +
-        "simplified variants. For more information: " +
-        "https://en.wikipedia.org/wiki/IDN_homograph_attack"
+        ' ⚠️ ATTENTION: This name contains non-ASCII characters as shown above. ' +
+        'Please be aware that there are characters that look identical or very ' +
+        'similar to English letters, especially characters from Cyrillic and Greek. ' +
+        'Also, traditional Chinese characters can look identical or very similar to ' +
+        'simplified variants. For more information: ' +
+        'https://en.wikipedia.org/wiki/IDN_homograph_attack'
       );
     }
-    return "";
+    return '';
   }
 
   initializeAttributes(created_date: number, label: string) {
@@ -128,23 +128,23 @@ export class Metadata {
     const character_set = findCharacterSet(label);
     return [
       {
-        trait_type: "Created Date",
-        display_type: "date",
+        trait_type: 'Created Date',
+        display_type: 'date',
         value: created_date * 1000,
       },
       {
-        trait_type: "Length",
-        display_type: "number",
+        trait_type: 'Length',
+        display_type: 'number',
         value: name_length,
       },
       {
-        trait_type: "Segment Length",
-        display_type: "number",
+        trait_type: 'Segment Length',
+        display_type: 'number',
         value: segment_length,
       },
       {
-        trait_type: "Character Set",
-        display_type: "string",
+        trait_type: 'Character Set',
+        display_type: 'string',
         value: character_set,
       },
     ];
@@ -168,7 +168,7 @@ export class Metadata {
 
   generateImage() {
     const name = this.name;
-    const labels = name.split(".");
+    const labels = name.split('.');
     const isSubdomain = labels.length > 2;
 
     const { domain, subdomainText } = this.processSubdomain(name, isSubdomain);
@@ -181,7 +181,7 @@ export class Metadata {
     );
 
     try {
-      this.setImage("data:image/svg+xml;base64," + base64EncodeUnicode(svg));
+      this.setImage('data:image/svg+xml;base64,' + base64EncodeUnicode(svg));
     } catch (e) {
       console.log(processedDomain, e);
       this.setImage("");
@@ -192,10 +192,10 @@ export class Metadata {
     let subdomainText;
     let domain = name;
 
-    if (isSubdomain && !name.includes("...")) {
-      const labels = name.split(".");
-      let subdomain = labels.slice(0, labels.length - 2).join(".") + ".";
-      domain = labels.slice(-2).join(".");
+    if (isSubdomain && !name.includes('...')) {
+      const labels = name.split('.');
+      let subdomain = labels.slice(0, labels.length - 2).join('.') + '.';
+      domain = labels.slice(-2).join('.');
 
       if (getSegmentLength(subdomain) > Metadata.MAX_CHAR) {
         subdomain = Metadata._textEllipsis(subdomain);
@@ -260,25 +260,25 @@ export class Metadata {
     const _nameLength = name.length;
     return (
       name.substring(0, Metadata.MAX_CHAR - 7) +
-      "..." +
+      '...' +
       name.substring(_nameLength - 7, _nameLength - 4) +
-      ".eth"
+      '.eth'
     );
   }
 
   static _getFontSize(name: string): number {
     if (!this.ctx) {
       try {
-        registerFont(CANVAS_FONT_PATH, { family: "Satoshi" });
-        registerFont(CANVAS_EMOJI_FONT_PATH, { family: "Noto Color Emoji" });
+        registerFont(CANVAS_FONT_PATH, { family: 'Satoshi' });
+        registerFont(CANVAS_EMOJI_FONT_PATH, { family: 'Noto Color Emoji' });
       } catch (error) {
-        console.warn("Font registration is failed.");
+        console.warn('Font registration is failed.');
         console.warn(error);
       }
-      const canvas = createCanvas(270, 270, "svg");
-      this.ctx = canvas.getContext("2d");
+      const canvas = createCanvas(270, 270, 'svg');
+      this.ctx = canvas.getContext('2d');
       this.ctx.font =
-        "20px Satoshi, Noto Color Emoji, Apple Color Emoji, sans-serif";
+        '20px Satoshi, Noto Color Emoji, Apple Color Emoji, sans-serif';
     }
     const fontMetrics = this.ctx.measureText(name);
     const fontSize = Math.floor(20 * (200 / fontMetrics.width));
@@ -295,12 +295,12 @@ export class Metadata {
   }
 
   private _labelCharLength(label: string): number {
-    if (!label) throw Error("Label cannot be empty!");
+    if (!label) throw Error('Label cannot be empty!');
     return getCodePointLength(label);
   }
 
   private _labelSegmentLength(label: string): number {
-    if (!label) throw Error("Label cannot be empty!");
+    if (!label) throw Error('Label cannot be empty!');
     return getSegmentLength(label);
   }
 

@@ -30,7 +30,7 @@ export async function getDomain(
   contractAddress: string,
   tokenId: string,
   version: Version,
-  loadImages: boolean = true,
+  loadImages: boolean = true
 ): Promise<Metadata> {
   let hexId: string, intId;
   if (!tokenId.match(/^0x/)) {

@@ -1,24 +1,25 @@
-import { strict as assert }        from 'assert';
-import { Contract }                from 'ethers';
-import { Request, Response }       from 'express';
-import { FetchError }              from 'node-fetch';
+import { strict as assert } from 'assert';
+import { Contract } from 'ethers';
+import { Request, Response } from 'express';
+import { FetchError } from 'node-fetch';
 import {
   ContractMismatchError,
   ExpiredNameError,
   NamehashMismatchError,
   UnsupportedNetwork,
   Version,
-}                                  from '../base';
+} from '../base';
 import {
   ADDRESS_ETH_REGISTRY,
   ETH_REGISTRY_ABI,
   RESPONSE_TIMEOUT,
-}                                  from '../config';
-import { checkContract }           from '../service/contract';
-import { getDomain }               from '../service/domain';
-import { Metadata }                from '../service/metadata';
+} from '../config';
+import { checkContract } from '../service/contract';
+import { getDomain } from '../service/domain';
+import { Metadata } from '../service/metadata';
 import getNetwork, { NetworkName } from '../service/network';
-import { constructEthNameHash }    from '../utils/namehash';
+import { constructEthNameHash } from '../utils/namehash';
+import { handleBlacklistAvatar } from '../utils/s3';
 
 export async function ensMetadataTokenId(req: Request, res: Response) {
   // #swagger.description = 'ENS NFT metadata'
@@ -31,7 +32,6 @@ export async function ensMetadataTokenId(req: Request, res: Response) {
   });
 
   const { tokenId: identifier } = req.params;
-
   const contractAddress = "0x8Cd716d9cf32d4C3605E3Ba60932BD71CfeEb689";
   const networkName = "jfintestnet"
   const { provider, SUBGRAPH_URL } = getNetwork(networkName as NetworkName);
@@ -50,8 +50,10 @@ export async function ensMetadataTokenId(req: Request, res: Response) {
       contractAddress,
       tokenId,
       version,
-      false,
+      false
     );
+
+    await handleBlacklistAvatar(result.getRawName(), tokenId)
 
     // add timestamp of the request date
     result.last_request_date = last_request_date;
@@ -115,7 +117,7 @@ export async function ensMetadataTokenId(req: Request, res: Response) {
         message: unknownMetadata,
       });
       return;
-    } catch (error) {}
+    } catch (error) { }
 
     /* #swagger.responses[404] = {
       description: 'No results found'
