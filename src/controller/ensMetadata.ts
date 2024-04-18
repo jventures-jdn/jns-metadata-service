@@ -19,7 +19,7 @@ import { getDomain } from "../service/domain";
 import { Metadata } from "../service/metadata";
 import getNetwork, { NetworkName } from "../service/network";
 import { constructEthNameHash } from "../utils/namehash";
-import { handleBlacklistAvatar } from "../utils/s3";
+import { handleTakendownAvatar } from "../utils/s3";
 
 export async function ensMetadata(req: Request, res: Response) {
   // #swagger.description = 'ENS NFT metadata'
@@ -35,7 +35,7 @@ export async function ensMetadata(req: Request, res: Response) {
   const { provider, SUBGRAPH_URL } = getNetwork(networkName as NetworkName);
   const last_request_date = Date.now();
   let tokenId, version;
-
+  
   try {
     ({ tokenId, version } = await checkContract(
       provider,
@@ -53,7 +53,7 @@ export async function ensMetadata(req: Request, res: Response) {
       false,
     );
 
-    await handleBlacklistAvatar(result.getRawName(), tokenId)
+    await handleTakendownAvatar(result.getRawName(), tokenId)
 
     // add timestamp of the request date
     result.last_request_date = last_request_date;
@@ -114,6 +114,7 @@ export async function ensMetadata(req: Request, res: Response) {
         version: Version.v1,
         // add timestamp of the request date
         last_request_date,
+        is_taken_down: false
       });
       res.status(200).json({
         message: unknownMetadata,

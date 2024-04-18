@@ -17,7 +17,7 @@ import {
 import { NetworkName } from "./network";
 import { decodeFuses, getWrapperState } from "../utils/fuse";
 import { getNamehash } from "../utils/namehash";
-import { getBlacklist } from "../utils/blacklist";
+import { isNameTakenDown } from "../utils/checkNameTakedown";
 
 const eth =
   "0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
@@ -66,11 +66,14 @@ export async function getDomain(
     );
   }
 
+  const isTakendown = await isNameTakenDown(tokenId);
+
   const metadata = new Metadata({
     name,
     created_date: createdAt,
     tokenId: hexId,
     version,
+    is_taken_down: isTakendown
   });
 
   async function requestAvatar() {
@@ -85,9 +88,8 @@ export async function getDomain(
   }
 
   async function requestMedia(isAvatarExist: boolean) {
-    const isBlacklisted = getBlacklist().includes(tokenId)
     if (loadImages) {
-      if (isAvatarExist && !isBlacklisted) {
+      if (isAvatarExist && !isTakendown) {
         const avatar = await requestAvatar();
         if (avatar) {
           const [base64, mimeType] = avatar;
@@ -97,7 +99,7 @@ export async function getDomain(
       metadata.generateImage();
     } else {
       metadata.setBackground(
-        isBlacklisted
+        isTakendown
           ? ""
           : `https://jns-metadata.testnet.jfinchain.com/${networkName}/avatar/${name}`
       );

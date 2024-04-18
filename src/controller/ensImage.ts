@@ -10,7 +10,7 @@ import { RESPONSE_TIMEOUT } from '../config';
 import { checkContract } from '../service/contract';
 import { getDomain } from '../service/domain';
 import getNetwork, { NetworkName } from '../service/network';
-import { handleBlacklistAvatar } from '../utils/s3';
+import { handleTakendownAvatar } from '../utils/s3';
 
 /* istanbul ignore next */
 export async function ensImage(req: Request, res: Response) {
@@ -40,7 +40,7 @@ export async function ensImage(req: Request, res: Response) {
       version,
     );
 
-    await handleBlacklistAvatar(result.getRawName(), tokenId)
+    await handleTakendownAvatar(result.getRawName(), tokenId)
 
     if (result.image_url) {
       const base64 = result.image_url.replace('data:image/svg+xml;base64,', '');
