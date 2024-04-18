@@ -30,7 +30,7 @@ https://metadata.ens.domains/mainnet/0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85/
 {
   "is_normalized": true,
   "name": "nick.eth",
-  "description": "nick.eth, an JNS name.",
+  "description": "nick.eth, a JNS name.",
   "attributes": [
     {
       "trait_type": "Created Date",

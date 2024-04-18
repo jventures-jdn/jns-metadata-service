@@ -97,7 +97,7 @@ const doc = {
       },
       ENSMetadata: {
         $name: 'nick.eth',
-        $description: 'nick.eth, an JNS name.',
+        $description: 'nick.eth, a JNS name.',
         $attributes: [
           {
             trait_type: 'Created Date',
