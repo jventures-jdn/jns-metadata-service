@@ -57,7 +57,7 @@ if (process.env.ENV === 'local') {
 }
 
 app.use(rateLimitMiddleware);
-app.use(blockRecursiveCalls);
+// app.use(blockRecursiveCalls);
 
 // apply cache header for all get requests
 app.use(setCacheHeader);

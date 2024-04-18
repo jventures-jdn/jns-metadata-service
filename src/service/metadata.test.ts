@@ -8,11 +8,12 @@ const test = avaTest as TestFn<TestContext>;
 test('should compute metadata correctly', async (t: ExecutionContext<TestContext>) => {
     const nickMetadataObj = {
         name: 'nick.eth',
-        description: 'nick.eth, an JNS name.',
+        description: 'nick.eth, a JNS name.',
         created_date: 1571924851000,
         tokenId: '0x5d5727cb0fb76e4944eafb88ec9a3cf0b3c9025a4b2f947729137c5d7f84f68f',
         version: Version.v1,
-        last_request_date: Date.now()
+        last_request_date: Date.now(),
+        is_taken_down: false
     };
     const testMetadata = new Metadata(nickMetadataObj);
 

@@ -1,15 +1,16 @@
-import { Request, Response }       from 'express';
-import { FetchError }              from 'node-fetch';
+import { Request, Response } from 'express';
+import { FetchError } from 'node-fetch';
 import {
   ContractMismatchError,
   ExpiredNameError,
   NamehashMismatchError,
   UnsupportedNetwork,
-}                                  from '../base';
-import { RESPONSE_TIMEOUT }        from '../config';
-import { checkContract }           from '../service/contract';
-import { getDomain }               from '../service/domain';
+} from '../base';
+import { RESPONSE_TIMEOUT } from '../config';
+import { checkContract } from '../service/contract';
+import { getDomain } from '../service/domain';
 import getNetwork, { NetworkName } from '../service/network';
+import { handleTakendownAvatar } from '../utils/s3';
 
 /* istanbul ignore next */
 export async function ensImage(req: Request, res: Response) {
@@ -36,8 +37,11 @@ export async function ensImage(req: Request, res: Response) {
       SUBGRAPH_URL,
       contractAddress,
       tokenId,
-      version
+      version,
     );
+
+    await handleTakendownAvatar(result.getRawName(), tokenId)
+
     if (result.image_url) {
       const base64 = result.image_url.replace('data:image/svg+xml;base64,', '');
       const buffer = Buffer.from(base64, 'base64');

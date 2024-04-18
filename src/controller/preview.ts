@@ -15,13 +15,14 @@ export async function preview(req: Request, res: Response) {
 
   try {
     if (!name || name.length < 7 || !name.endsWith('.jfin')) {
-      throw Error(`${name} is not an JNS name.`);
+      throw Error(`${name} is not a JNS name.`);
     }
     const metadata = new Metadata({
       name,
       created_date: 0,
       tokenId: '0',
       version: Version.v2,
+      is_taken_down: false
     });
     metadata.generateImage();
 

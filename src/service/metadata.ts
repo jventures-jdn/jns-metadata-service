@@ -1,19 +1,11 @@
-import {ens_normalize}                          from '@adraffy/ens-normalize';
-import { 
-  CanvasRenderingContext2D, 
-  createCanvas, 
-  registerFont 
-}                                               from 'canvas';
-import { Version }                              from '../base';
-import {
-  CANVAS_FONT_PATH,
-  CANVAS_EMOJI_FONT_PATH,
-}                                               from '../config';
-import createSVGfromTemplate                    from '../svg-template';
-import base64EncodeUnicode                      from '../utils/base64encode';
-import { isASCII, findCharacterSet }            from '../utils/characterSet';
-import { getCodePointLength, getSegmentLength } from '../utils/charLength';
-
+import { ens_normalize } from "@adraffy/ens-normalize";
+import { CanvasRenderingContext2D, createCanvas, registerFont } from "canvas";
+import { Version } from "../base";
+import { CANVAS_FONT_PATH, CANVAS_EMOJI_FONT_PATH, APP_V3_ENDPOINT } from "../config";
+import createSVGfromTemplate from "../svg-template";
+import base64EncodeUnicode from "../utils/base64encode";
+import { isASCII, findCharacterSet } from "../utils/characterSet";
+import { getCodePointLength, getSegmentLength } from "../utils/charLength";
 
 interface Attribute {
   trait_type: string,
@@ -22,30 +14,32 @@ interface Attribute {
 }
 
 export interface MetadataInit {
-  name               : string;
-  description?       : string;
-  created_date       : number;
-  registered_date?   : Date | null;
-  expiration_date?   : Date | null;
-  tokenId            : string;
-  version            : Version;
-  last_request_date? : number;
+  name: string;
+  description?: string;
+  created_date: number;
+  registered_date?: Date | null;
+  expiration_date?: Date | null;
+  tokenId: string;
+  version: Version;
+  last_request_date?: number;
+  is_taken_down: boolean;
 }
 
 export interface Metadata {
-  name               : string;
-  description        : string;
-  attributes         : Attribute[];
-  name_length?       : number;
-  segment_length?    : number;
-  image              : string;
-  image_url?         : string; // same as image, keep for backward compatibility
-  is_normalized      : boolean;
-  background_image?  : string;
-  mimeType?          : string;
-  url?               : string | null;
-  version            : Version;
-  last_request_date? : number;
+  name: string;
+  description: string;
+  attributes: Attribute[];
+  name_length?: number;
+  segment_length?: number;
+  image: string;
+  image_url?: string; // same as image, keep for backward compatibility
+  is_normalized: boolean;
+  background_image?: string;
+  mimeType?: string;
+  url?: string | null;
+  version: Version;
+  last_request_date?: number;
+  raw?: string;
 }
 
 export class Metadata {
@@ -59,35 +53,55 @@ export class Metadata {
     tokenId,
     version,
     last_request_date,
+    is_taken_down
   }: MetadataInit) {
     const label = this.getLabel(name);
+
     this.is_normalized = this._checkNormalized(name);
-    this.name = this.formatName(name, tokenId);
+    this.raw = name;
+    this.name = is_taken_down
+      ? this.maskName(name)
+      : this.formatName(name, tokenId);
     this.description = this.formatDescription(name, description);
     this.attributes = this.initializeAttributes(created_date, label);
     // TODO: USE JNS APP INSTEAD
-    this.url = this.is_normalized
-      ? `https://fc2991c4.jns-app.pages.dev/name/${name}`
-      : null;
+    this.url =
+      this.is_normalized && !is_taken_down
+        ? `${APP_V3_ENDPOINT}/name/${name}`
+        : null;
     this.last_request_date = last_request_date;
     this.version = version;
   }
 
+  removeRawName() {
+    delete this.raw;
+  }
+
+  getRawName() {
+    return this.raw;
+  }
+
   getLabel(name: string) {
-    return name.substring(0, name.indexOf('.'));
+    return name.substring(0, name.indexOf("."));
+  }
+
+  maskName(name: string): string {
+    const [value, domain] = name.split(".");
+    const maskedName = "*".repeat(value.length);
+    return `${maskedName}.${domain}`;
   }
 
   formatName(name: string, tokenId: string) {
     return this.is_normalized
       ? name
       : tokenId.replace(
-          new RegExp('^(.{0,6}).*(.{4})$', 'im'),
-          '[$1...$2].eth'
-        );
+        new RegExp('^(.{0,6}).*(.{4})$', 'im'),
+        '[$1...$2].eth'
+      );
   }
 
   formatDescription(name: string, description?: string) {
-    const baseDescription = description || `${this.name}, an JNS name.`;
+    const baseDescription = description || `${this.name}, a JNS name.`;
     const normalizedNote = !this.is_normalized
       ? ` (${name} is not in normalized form)`
       : '';
@@ -171,7 +185,7 @@ export class Metadata {
       this.setImage('data:image/svg+xml;base64,' + base64EncodeUnicode(svg));
     } catch (e) {
       console.log(processedDomain, e);
-      this.setImage('');
+      this.setImage("");
     }
   }
 
