@@ -1,14 +1,14 @@
 import { CopyObjectCommand, DeleteObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { S3_ACCESS_KEY, S3_ENDPOINT, S3_SECRET_ACCESS_KEY } from "../config";
-import { getBlacklist } from "./blacklist";
+import { isNameTakenDown } from "./checkNameTakedown";
 
 /**
- * Move R2 avatar object based on the blacklist
+ * Move R2 avatar object based on the takedown list
  * 
- * @param rawName The blacklisted name
- * @param tokenId The blacklisted tokenId
+ * @param rawName The taken down name
+ * @param tokenId The taken down token id
  */
-export async function handleBlacklistAvatar(rawName?: string, tokenId?: string) {
+export async function handleTakendownAvatar(rawName?: string, tokenId?: string) {
   if (!rawName || !tokenId) {
     return
   }
@@ -23,13 +23,14 @@ export async function handleBlacklistAvatar(rawName?: string, tokenId?: string) 
   });
 
   try {
-    const isBlacklisted = getBlacklist().includes(tokenId)
-    const sourceBucket = isBlacklisted ? "jns" : "jns-blacklist";
-    const destinationBucket = isBlacklisted ? "jns-blacklist" : "jns";
+    const isTakendown = await isNameTakenDown(tokenId);
+    const sourceBucket = isTakendown ? process.env.IS_TESTNET ? "jns-testnet" : "jns" : process.env.IS_TESTNET ? "jns-takedown-testnet" : "jns-takedown";
+    const destinationBucket = isTakendown ? process.env.IS_TESTNET ? "jns-takedown-testnet" : "jns-takedown" : process.env.IS_TESTNET ? "jns-testnet" : "jns";
+    const network = process.env.IS_TESTNET ? 'jfintestnet' : 'jfin'
 
     const getObjectParams = {
       Bucket: sourceBucket,
-      Key: `jfintestnet/registered/${rawName}`,
+      Key: `${network}/registered/${rawName}`,
     };
 
     // get avatar object with key
@@ -37,8 +38,8 @@ export async function handleBlacklistAvatar(rawName?: string, tokenId?: string) 
 
     const copyObjectParams = {
       Bucket: destinationBucket,
-      CopySource: `/${sourceBucket}/jfintestnet/registered/${rawName}`,
-      Key: `jfintestnet/registered/${rawName}`,
+      CopySource: `/${sourceBucket}/${network}/registered/${rawName}`,
+      Key: `${network}/registered/${rawName}`,
     };
 
     // transfer avatar object to the destination bucket
@@ -46,7 +47,7 @@ export async function handleBlacklistAvatar(rawName?: string, tokenId?: string) 
 
     const deleteObjectParams = {
       Bucket: sourceBucket,
-      Key: `jfintestnet/registered/${rawName}`,
+      Key: `${network}/registered/${rawName}`,
     };
 
     // delete from the source bucket
