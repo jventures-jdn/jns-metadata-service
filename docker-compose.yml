@@ -4,11 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jns-metadata-service
+    image: jns-metadata-service-testnet
     ports:
       - "8080:8080"
     environment:
-      - ADDRESS_ETH_REGISTRAR=0xc9259D1B7Ff668F3d3936768F08CaD71a921800b
-      - ADDRESS_NAME_WRAPPER=0x8Cd716d9cf32d4C3605E3Ba60932BD71CfeEb689
+      - ADDRESS_ETH_REGISTRAR=0x843A1b4385B1e2FF192d2997e1D7DCd71645b231
+      - ADDRESS_NAME_WRAPPER=0x34a30717aaE3659CC84246EA8e4A7FB0DCC4093C
       - RPC_PROVIDER=https://rpc.testnet.jfinchain.com
       - SUBGRAPH_URL=https://termite-intense-monarch.ngrok-free.app/subgraphs/name/graphprotocol/ens
